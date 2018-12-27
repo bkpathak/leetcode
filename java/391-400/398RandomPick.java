@@ -1,3 +1,4 @@
+// The idea is to use Reservoir sampling
 public class Solution {
 
     int[] nums;
