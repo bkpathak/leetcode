@@ -15,16 +15,19 @@ and start = (3, 0) (bottom left) and end = (0, 0) (top left), the minimum number
 */
 
 // "static void main" must be defined in a public class.
+// "static void main" must be defined in a public class.
 class Point{
     int x;
     int y;
-    public Point(int x, int y) {
+    int dist;
+    public Point(int x, int y, int dist) {
         this.x = x;
         this.y = y;
+        this.dist = dist;
     }
 }
 public class Main {
-    public static int findMinDist(int[][]M, Point s, Point e, int pathLength) {
+   /* public static int findMinDist(int[][]M, Point s, Point e, int pathLength) {
         if (s.x == e.x && s.y == e.y) return pathLength;
         if (s.x < 0 || s.x >= M.length || s.y < 0 || s.y >= M[0].length || M[s.x][s.y] == 0) return Integer.MAX_VALUE;
         
@@ -40,6 +43,46 @@ public class Main {
         }
         M[s.x][s.y] = 1;
         return minDist;
+    }*/
+    
+    public static int findMinDistLee(int[][]M, Point s, Point e) {
+        int m = M.length, n = M[0].length;
+        boolean[][] visited = new boolean[m][n];
+        
+        Queue<Point> q = new LinkedList<>();
+        visited[s.x][s.y] = true;
+        q.add(s);
+        int row[] = { -1, 0, 0, 1 };
+	    int col[] = { 0, -1, 1, 0 };
+        int minDist = Integer.MAX_VALUE;
+        while (!q.isEmpty()) {
+            // Pop t fron the top of the queue
+            Point p = q.poll();
+            int x = p.x;
+            int y = p.y;
+            int dist = p.dist;
+            
+            if (x == e.x && y == e.y) {
+                minDist = p.dist;
+            }
+            
+            // Check all the four possible directions
+            
+            for (int k = 0; k < 4; k++) {
+                if (isValid(M, visited, x + row[k], y + col[k] )) {
+                    visited[x + row[k]][y + col[k]] = true;
+                    q.add(new Point( x + row[k], y + col[k], dist + 1));
+                }
+            }
+        }
+        
+        return minDist;
+        
+    }
+    
+    public static boolean isValid(int[][] M,boolean[][] V, int i, int j) {
+        if (i < 0 || i >= M.length || j < 0 || j >= M[0].length || V[i][j] || M[i][j] == 0) return false;
+        return true;
     }
     public static void main(String[] args) {
          int[][] mat =new int[][] { 
@@ -54,8 +97,8 @@ public class Main {
         { 1, 1, 0, 0, 0, 0, 1, 0, 0, 1 } 
     }; 
         
-        Point source = new Point(0,0); 
-        Point dest = new Point(3,4);
-        System.out.println(findMinDist(mat, source, dest, 0));
+        Point source = new Point(0,0, 0); 
+        Point dest = new Point(3,4, Integer.MAX_VALUE);
+        System.out.println(findMinDistLee(mat, source, dest));
     }
 }
